@@ -75,7 +75,7 @@ class BinarySearchTree<T extends Comparable<T>> {
         }
         // Si es mayor, se busca en el subárbol derecho.
         else if (x.compareTo(t.element) > 0) {
-            return this.containsNode(x, t.right); // Corrección aquí, debe ser t.right
+            return this.containsNode(x, t.right); 
         }
         // Si es igual, el valor se ha encontrado.
         else {
@@ -91,7 +91,7 @@ class BinarySearchTree<T extends Comparable<T>> {
 
         const minNode = this.findMinNode(this.root);
         if (minNode === null) {
-            throw new Error("No se encontró un valor mínimo."); // Manejo de error adicional
+            throw new Error("No se encontró un valor mínimo.");
         }
         return minNode.element;
     }
