@@ -1,30 +1,37 @@
-class MyNode {
-    key: number;
-    height: number;
-    left: MyNode | null = null;
-    right: MyNode | null = null;
+/**
+ * AVL Implementation
+ * @author dalopezgu
+ */
 
-    constructor(key: number) {
+class MyNode<T> {
+    key: T;
+    height: number;
+    left: MyNode<T> | null;
+    right: MyNode<T> | null;
+
+    constructor(key: T) {
         this.key = key;
-        this.height = 1; // Altura inicial del nodo
+        this.left = null;
+        this.right = null;
+        this.height = 1;
     }
 }
 
-class AVLTree {
-    root: (MyNode | null) = null;
+class AVLTree<T extends Comparable<T>> {
+    root: (MyNode<T> | null) = null;
 
     // Obtener la altura de un nodo
-    public height(node: MyNode | null): number {
+    public height(node: MyNode<T> | null): number {
         return node === null ? 0 : node.height;
     }
 
     // Obtener el balance de un nodo
-    public getBalance(node: MyNode | null): number {
+    public getBalance(node: MyNode<T> | null): number {
         return node === null ? 0 : this.height(node.left) - this.height(node.right);
     }
 
     // Rotación simple a la derecha
-    public rotateRight(y: MyNode): MyNode {
+    private rotateRight(y: MyNode<T>): MyNode<T> {
         const x = y.left!;
         const T2 = x.right;
 
@@ -41,7 +48,7 @@ class AVLTree {
     }
 
     // Rotación simple a la izquierda
-    public rotateLeft(x: MyNode): MyNode {
+    private rotateLeft(x: MyNode<T>): MyNode<T> {
         const y = x.right!;
         const T2 = y.left;
 
@@ -58,15 +65,15 @@ class AVLTree {
     }
 
     // Insertar un nodo
-    public insert(node: MyNode | null, key: number): MyNode {
-        if (node === null) return new MyNode(key);
+    private insert(node: MyNode<T> | null, key: T): MyNode<T> {
+        if (node === null) return new MyNode<T>(key);
 
-        if (key < node.key) {
+        if (key.compareTo(node.key) < 0) {
             node.left = this.insert(node.left, key);
-        } else if (key > node.key) {
+        } else if (key.compareTo(node.key) > 0) {
             node.right = this.insert(node.right, key);
         } else {
-            return node; // No se permiten claves duplicadas
+            return node; // No se permiten claves duplicados
         }
 
         node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
@@ -95,7 +102,7 @@ class AVLTree {
     }
 
     // Encontrar el nodo con el valor mínimo en el árbol
-    public minValueNode(node: MyNode): MyNode {
+    public minValueNode(node: MyNode<T>): MyNode<T> {
         let current = node;
         while (current.left !== null) {
             current = current.left;
@@ -104,12 +111,12 @@ class AVLTree {
     }
 
     // Eliminar un nodo
-    public delete(node: MyNode | null, key: number): MyNode | null {
+    private delete(node: MyNode<T> | null, key: T): MyNode<T> | null {
         if (node === null) return node;
 
-        if (key < node.key) {
+        if (key.compareTo(node.key) < 0) {
             node.left = this.delete(node.left, key);
-        } else if (key > node.key) {
+        } else if (key.compareTo(node.key) > 0) {
             node.right = this.delete(node.right, key);
         } else {
             if (node.left === null || node.right === null) {
@@ -154,17 +161,17 @@ class AVLTree {
     }
 
     // Método para insertar un nodo desde la raíz
-    public insertKey(key: number): void {
+    public insertKey(key: T): void {
         this.root = this.insert(this.root, key);
     }
 
     // Método para eliminar un nodo desde la raíz
-    public deleteKey(key: number): void {
+    public deleteKey(key: T): void {
         this.root = this.delete(this.root, key);
     }
 
     // Método para imprimir el árbol en orden
-    public inOrder(node: MyNode | null, result: number[] = []): number[] {
+    private inOrder(node: MyNode<T> | null, result: T[] = []): T[] {
         if (node !== null) {
             this.inOrder(node.left, result);
             result.push(node.key);
@@ -174,21 +181,32 @@ class AVLTree {
     }
 
     // Método para imprimir el árbol en orden desde la raíz
-    public inOrderTraversal(): number[] {
+    public inOrderTraversal(): T[] {
         return this.inOrder(this.root);
+    }
+
+      // Método para buscar un valor
+    public find(value: T): MyNode<T> | null {
+        return this.findNode(this.root, value);
+    }
+
+    private findNode(node: MyNode<T> | null, value: T): MyNode<T> | null {
+        if (node === null) {
+            return null;
+        }
+
+        if (value.compareTo(node.key) < 0) {
+            return this.findNode(node.left, value);
+        } else if (value.compareTo(node.key) > 0) {
+            return this.findNode(node.right, value);
+        } else {
+            return node;
+        }
     }
 }
 
-
-const tree = new AVLTree();
-
-const startInsertTime = performance.now();
-
-for(let i=0; i<1000; i++){
-    tree.insertKey(i);
+interface Comparable<T>{
+    compareTo(other: T): number;
 }
 
-const endInsertTime = performance.now();
-const insertDuration = endInsertTime - startInsertTime;
 
-console.log(`Tiempo de ejecución de la inserción: ${insertDuration} milisegundos`);

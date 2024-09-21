@@ -1,10 +1,14 @@
 "use strict";
+/**
+ * AVL Implementation
+ * @author dalopezgu
+ */
 class MyNode {
     constructor(key) {
+        this.key = key;
         this.left = null;
         this.right = null;
-        this.key = key;
-        this.height = 1; // Altura inicial del nodo
+        this.height = 1;
     }
 }
 class AVLTree {
@@ -49,14 +53,14 @@ class AVLTree {
     insert(node, key) {
         if (node === null)
             return new MyNode(key);
-        if (key < node.key) {
+        if (key.compareTo(node.key) < 0) {
             node.left = this.insert(node.left, key);
         }
-        else if (key > node.key) {
+        else if (key.compareTo(node.key) > 0) {
             node.right = this.insert(node.right, key);
         }
         else {
-            return node; // No se permiten claves duplicadas
+            return node; // No se permiten claves duplicados
         }
         node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
         const balance = this.getBalance(node);
@@ -89,10 +93,10 @@ class AVLTree {
     delete(node, key) {
         if (node === null)
             return node;
-        if (key < node.key) {
+        if (key.compareTo(node.key) < 0) {
             node.left = this.delete(node.left, key);
         }
-        else if (key > node.key) {
+        else if (key.compareTo(node.key) > 0) {
             node.right = this.delete(node.right, key);
         }
         else {
@@ -152,12 +156,22 @@ class AVLTree {
     inOrderTraversal() {
         return this.inOrder(this.root);
     }
+    // Método para buscar un valor
+    find(value) {
+        return this.findNode(this.root, value);
+    }
+    findNode(node, value) {
+        if (node === null) {
+            return null;
+        }
+        if (value.compareTo(node.key) < 0) {
+            return this.findNode(node.left, value);
+        }
+        else if (value.compareTo(node.key) > 0) {
+            return this.findNode(node.right, value);
+        }
+        else {
+            return node;
+        }
+    }
 }
-const tree = new AVLTree();
-const startInsertTime = performance.now();
-for (let i = 0; i < 1000000; i++) {
-    tree.insertKey(i);
-}
-const endInsertTime = performance.now();
-const insertDuration = endInsertTime - startInsertTime;
-console.log(`Tiempo de ejecución de la inserción: ${insertDuration} milisegundos`);

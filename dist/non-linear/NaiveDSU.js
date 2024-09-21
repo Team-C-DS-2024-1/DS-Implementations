@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * Naive DSU implementation
+ * @author sgewux
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 class NaiveDSU {
     constructor(N) {

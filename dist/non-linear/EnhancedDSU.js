@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * Enhanced DSU implementation
+ * @author sgewux
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 class EnhancedDSU {
     constructor(N) {
