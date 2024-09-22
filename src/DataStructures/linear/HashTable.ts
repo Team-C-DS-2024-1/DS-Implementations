@@ -78,7 +78,7 @@ class HashTable<K extends string | number, V> {
     // Mantiene el tamaño actual de la tabla (número de elementos).
     private _size: number;
 
-    // Constructor que inicializa la tabla con una capacidad opcional, por defecto es 20.
+    // Constructor que inicializa la tabla con una capacidad opcional, por defecto es 16.
     constructor(capacity: number = HashTable.DEFAULT_CAPACITY) {
         this.table = new Array<SinglyLinkedList<Entry<K, V>>>(capacity);
         this._size = 0;
