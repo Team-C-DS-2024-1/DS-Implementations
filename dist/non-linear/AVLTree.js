@@ -12,8 +12,9 @@ class MyNode {
     }
 }
 class AVLTree {
-    constructor() {
+    constructor(compareFn) {
         this.root = null;
+        this.compare = compareFn;
     }
     // Obtener la altura de un nodo
     height(node) {
@@ -53,10 +54,10 @@ class AVLTree {
     insert(node, key) {
         if (node === null)
             return new MyNode(key);
-        if (key.compareTo(node.key) < 0) {
+        if (this.compare(key, node.key) < 0) {
             node.left = this.insert(node.left, key);
         }
-        else if (key.compareTo(node.key) > 0) {
+        else if (this.compare(key, node.key) > 0) {
             node.right = this.insert(node.right, key);
         }
         else {
@@ -93,10 +94,10 @@ class AVLTree {
     delete(node, key) {
         if (node === null)
             return node;
-        if (key.compareTo(node.key) < 0) {
+        if (this.compare(key, node.key) < 0) {
             node.left = this.delete(node.left, key);
         }
-        else if (key.compareTo(node.key) > 0) {
+        else if (this.compare(key, node.key) > 0) {
             node.right = this.delete(node.right, key);
         }
         else {
@@ -160,18 +161,26 @@ class AVLTree {
     find(value) {
         return this.findNode(this.root, value);
     }
-    findNode(node, value) {
+    findNode(node, key) {
         if (node === null) {
             return null;
         }
-        if (value.compareTo(node.key) < 0) {
-            return this.findNode(node.left, value);
+        if (this.compare(key, node.key) < 0) {
+            return this.findNode(node.left, key);
         }
-        else if (value.compareTo(node.key) > 0) {
-            return this.findNode(node.right, value);
+        else if (this.compare(key, node.key) > 0) {
+            return this.findNode(node.right, key);
         }
         else {
             return node;
         }
     }
 }
+const compararPersonas1 = (per1, per2) => {
+    return per1.name.localeCompare(per2.name);
+};
+const compararPersonas2 = (per1, per2) => {
+    return per1.address.localeCompare(per2.address);
+};
+const nameTree = new AVLTree(compararPersonas1); //! Se crea un arbol priorizando orden por 'name'
+const addressTree = new AVLTree(compararPersonas2); //! Se crea un arbol priorizando orden por 'address'

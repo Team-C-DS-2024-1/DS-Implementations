@@ -17,8 +17,13 @@ class MyNode<T> {
     }
 }
 
-class AVLTree<T extends Comparable<T>> {
+class AVLTree<T> {
     root: (MyNode<T> | null) = null;
+    private compare: (a: T, b: T) => number;
+
+    constructor(compareFn: (a: T, b: T) => number){
+        this.compare = compareFn;
+    }
 
     // Obtener la altura de un nodo
     public height(node: MyNode<T> | null): number {
@@ -68,9 +73,9 @@ class AVLTree<T extends Comparable<T>> {
     private insert(node: MyNode<T> | null, key: T): MyNode<T> {
         if (node === null) return new MyNode<T>(key);
 
-        if (key.compareTo(node.key) < 0) {
+        if (this.compare(key, node.key) < 0) {
             node.left = this.insert(node.left, key);
-        } else if (key.compareTo(node.key) > 0) {
+        } else if (this.compare(key, node.key) > 0) {
             node.right = this.insert(node.right, key);
         } else {
             return node; // No se permiten claves duplicados
@@ -114,9 +119,9 @@ class AVLTree<T extends Comparable<T>> {
     private delete(node: MyNode<T> | null, key: T): MyNode<T> | null {
         if (node === null) return node;
 
-        if (key.compareTo(node.key) < 0) {
+        if (this.compare(key, node.key) < 0) {
             node.left = this.delete(node.left, key);
-        } else if (key.compareTo(node.key) > 0) {
+        } else if (this.compare(key, node.key) > 0) {
             node.right = this.delete(node.right, key);
         } else {
             if (node.left === null || node.right === null) {
@@ -190,23 +195,35 @@ class AVLTree<T extends Comparable<T>> {
         return this.findNode(this.root, value);
     }
 
-    private findNode(node: MyNode<T> | null, value: T): MyNode<T> | null {
+    private findNode(node: MyNode<T> | null, key: T): MyNode<T> | null {
         if (node === null) {
             return null;
         }
 
-        if (value.compareTo(node.key) < 0) {
-            return this.findNode(node.left, value);
-        } else if (value.compareTo(node.key) > 0) {
-            return this.findNode(node.right, value);
+        if (this.compare(key, node.key) < 0) {
+            return this.findNode(node.left, key);
+        } else if (this.compare(key, node.key) > 0) {
+            return this.findNode(node.right, key);
         } else {
             return node;
         }
     }
 }
 
-interface Comparable<T>{
-    compareTo(other: T): number;
+
+interface Persona {             //* Ejemplo de objeto a guardar
+    name: string;
+    address: string;
 }
 
+const compararPersonas1 = (per1: Persona, per2: Persona): number => {   //TODO la funcion permite comparar por atributo 'name'(cambiar variables por atributos a comparar)
+    return per1.name.localeCompare(per2.name);
+};
 
+const compararPersonas2 = (per1: Persona, per2: Persona): number => {   //TODO la funcion permite comparar por atributo 'address'(cambiar variables por atributos a comparar)
+    return per1.address.localeCompare(per2.address);
+};
+
+
+const nameTree = new AVLTree<Persona>(compararPersonas1);       //! Se crea un arbol priorizando orden por 'name'
+const addressTree = new AVLTree<Persona>(compararPersonas2);    //! Se crea un arbol priorizando orden por 'address'
